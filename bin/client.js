@@ -53,11 +53,11 @@ const my_request = (_options, _data) => {
 }
 
 my_request(options_login, data_login).then(res => {
-	return my_request(options_pushdata, JSON.stringify({
-		token: res.token,
-		data: "tkt mgl"
-	}))
-})
-	.then(res => console.log(res))
+ return my_request(options_pushdata, JSON.stringify({
+ token: res.token,
+ data: "tkt mgl"
+ }))
+ })
+ .then(res => console.log(res))
 
 
