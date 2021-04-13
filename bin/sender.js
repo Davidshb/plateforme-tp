@@ -3,8 +3,9 @@ const amqp = require("amqplib/callback_api")
 const opt = {
 	credentials: require("amqplib").credentials.plain(process.env.AMQP_USER, process.env.AMQP_PASSWORD)
 }
+const IP = process.env.IP || "127.0.0.1"
 
-amqp.connect("amqp://192.168.1.77", opt, (error0, connection) => {
+amqp.connect(`amqp://${IP}`, opt, (error0, connection) => {
 	if (error0) {
 		throw error0
 	}
@@ -14,13 +15,14 @@ amqp.connect("amqp://192.168.1.77", opt, (error0, connection) => {
 			throw error1
 
 		let queue = "Q1",
-			msg = process.argv[2] ?? "aucun message spécifié"
+			msg = "message spécifié"
 
 		channel.assertQueue(queue, {
 			durable: false
 		})
 
 		channel.sendToQueue(queue, Buffer.from(msg))
+		console.log("envoyé : %s", msg)
 	})
 
 	setTimeout(() => {
