@@ -10,7 +10,7 @@ const schemas = require("./schema.json")
 
 require('dotenv').config()
 
-const port = process.env.PORT | 5000
+const port = process.env.PORT || 5000
 
 function jsonSchemaInvalid(res, messages) {
 	res.send(JSON.stringify({
