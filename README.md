@@ -10,7 +10,7 @@
 
 Mise en place d'un prototype d'une plateforme complète d'IOT
 
-![image](https://user-images.githubusercontent.com/17109060/32149040-04f3125c-bd25-11e7-8003-66fd29bc18d4.png)
+![image](https://res.cloudinary.com/davidshbo/image/upload/v1618294472/plateforme-iot/iot_representation.png)
 
 
 # Table of contents
