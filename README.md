@@ -17,13 +17,13 @@ Mise en place d'un prototype d'une plateforme complète d'IOT
 
 - [Utilisation](#utilisation)
 - [Installation](#installation)
-- [Pulling](#mchanisme-du-pulling)  
-- [Mise à jour](#mise--jour)
+- [Pulling](#méchanisme-du-pulling)  
+- [Mise à jour](#mise-à-jour)
 - [License](#license)
 
 # Utilisation
 
-[(Back to top)](#table-des-matires)
+[(retourner en haut)](#table-des-matières)
 
 la commande pour lancer le serveur
 ```sh
@@ -37,7 +37,7 @@ npm run client
 
 # Installation
 
-[(Back to top)](#table-des-matires)
+[(Bretourner en haut)](#table-des-matières)
 
 1. Installez Node (version >= 12.* ) et NPM (version >= 6.* )
 2. `npm install --save`
@@ -50,6 +50,8 @@ I'm an inline-style link](https://www.somewebsite.com)
 
 # Méchanisme du pulling
 
+[(retourner en haut)](#table-des-matières)
+
 ## [TP3](https://github.com/Davidshb/plateforme-tp/tree/tp3)
 
 Le client instancie une connexion avec le serveur.
@@ -61,7 +63,7 @@ On distingue deux Commandes :
 
 # Mise à jour
 
-[(Back to top)](#table-of-contents)
+[(retourner en haut)](#table-des-matières)
 
 Vous voulez mettre à jour la plateforme ?
 
