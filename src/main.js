@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -5,20 +6,14 @@ const host = '0.0.0.0' // Utiliser 0.0.0.0 pour être visible depuis l'exterieur
 const port = 5000
 const jwt = require('jsonwebtoken')
 
-const LOGIN = "test"
-const PASSWORD = "pass"
+const LOGIN = process.env.LOGIN ||"test"
+const PASSWORD = process.env.PASSWORD || "pass"
 const MY_KEY = "foufou"
 
 
 function run() {
 
 	app.use(bodyParser.json())
-
-	app.get('/data', (req, res) => {
-		res.setHeader('Content-Type', 'application/json')
-		res.status(200)
-		res.end(JSON.stringify({"message": "DATA"}))
-	})
 
 	app.post("/login", (req, res) => {
 		let {login, password} = req.body
