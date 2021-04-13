@@ -3,7 +3,7 @@ const amqp = require("amqplib/callback_api")
 const opt = {
 	credentials: require("amqplib").credentials.plain(process.env.AMQP_USER, process.env.AMQP_PASSWORD)
 }
-const IP = process.env.IP || "127.0.0.1"
+const IP = process.env.RABBIT_MQ_IP || "127.0.0.1"
 
 amqp.connect(`amqp://${IP}`, opt, (error0, connection) => {
 	if (error0) {

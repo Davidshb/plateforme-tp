@@ -1,63 +1,43 @@
-const http = require('http')
+const axios = require('axios')
+const {ArgumentParser} = require('argparse')
 
-const data_login = JSON.stringify({
-	login: "test",
-	password: "pass"
+// Setting default value
+let url = "http://localhost:8000"
+
+// If some parameters are there, use them...
+const parser = ArgumentParser({
+	add_help: true
 })
-const options_login = {
-	hostname: 'localhost',
-	port: 5000,
-	path: '/login',
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
+
+parser.add_argument("-l", "--login", {help: "authentication username"})
+parser.add_argument("-p", "--password", {help: "authentication password"})
+parser.add_argument("-t", "--to", {help: "code destinataire", type: "int", required: true, choices: [0, 1, 2]})
+
+let args = parser.parse_args()
+
+if (args.error)
+	console.log(args)
+
+
+const login = args.login || "test"
+const password = args.password || "pass"
+const code = args.to
+
+axios.post(`${url}/login`, {
+		login,
+		password
 	}
-}
-
-
-const options_pushdata = {
-	hostname: 'localhost',
-	port: 5000,
-	path: '/pushdata',
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	}
-}
-
-
-const my_request = (_options, _data) => {
-	_options.headers["Content-Length"] = _data.length
-
-	return new Promise((resolve, reject) => {
-		const req = http.request(_options, res => {
-			console.log(`statusCode: ${res.statusCode}`)
-			let chunks = []
-
-			res.on('data', d => {
-				chunks.push(d)
-			})
-
-			res.on('end', () => {
-				resolve(JSON.parse(Buffer.concat(chunks).toString("utf-8")))
-			})
-		})
-
-		req.on('error', error => {
-			reject(error)
-		})
-
-		req.write(_data)
-		req.end()
+).then(d => {
+	let token = d.data.token
+	return axios.post(`${url}/pushdata`, {
+		token,
+		code
 	})
-}
-
-my_request(options_login, data_login).then(res => {
- return my_request(options_pushdata, JSON.stringify({
- token: res.token,
- data: "tkt mgl"
- }))
- })
- .then(res => console.log(res))
+}).then(d => {
+	console.log(d.data)
+}).catch(function (error) {
+	// handle error
+	console.log("ERROR : ", error.message)
+})
 
 
