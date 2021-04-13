@@ -13,7 +13,7 @@ Mise en place d'un prototype d'une plateforme complète d'IOT
 ![image](https://res.cloudinary.com/davidshbo/image/upload/v1618294472/plateforme-iot/iot_representation.png)
 
 
-# Table of contents
+# Table des matières
 
 - [Utilisation](#utilisation)
 - [Installation](#installation)
@@ -23,7 +23,7 @@ Mise en place d'un prototype d'une plateforme complète d'IOT
 
 # Utilisation
 
-[(Back to top)](#table-of-contents)
+[(Back to top)](#table-des-matires)
 
 la commande pour lancer le serveur
 ```sh
@@ -37,7 +37,7 @@ npm run client
 
 # Installation
 
-[(Back to top)](#table-of-contents)
+[(Back to top)](#table-des-matires)
 
 1. Installez Node (version >= 12.* ) et NPM (version >= 6.* )
 2. `npm install --save`
@@ -73,7 +73,7 @@ ou alors récupérer de nouveaux les fichiers sur le dépôt
 
 # License
 
-[(Back to top)](#table-of-contents)
+[(Back to top)](#table-des-matires)
 
 
 The General Public License (GNU) 2007. Veuillez regarder le fichier [LICENSE.md](LICENSE.md) pour plus de détails.
