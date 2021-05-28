@@ -31,13 +31,14 @@ axios.post(`${url}/login`, {
 	let token = d.data.token
 	return axios.post(`${url}/pushdata`, {
 		token,
-		code
+		code,
+		data: "ceci est une donnée"
 	})
 }).then(d => {
 	console.log(d.data)
-}).catch(function (error) {
-	// handle error
+}).catch(error => {
 	console.log("ERROR : ", error.message)
+	console.log(error.response.data)
 })
 
 

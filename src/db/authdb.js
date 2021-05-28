@@ -1,4 +1,4 @@
-exports.identifiants = [
+const identifiants = [
 	{login: 'Alvera94', password: 'j6_JIn2mDLNYzHG'},
 	{login: 'Rossie.Sawayn2', password: 'y_ht_SwuXoxpa8K'},
 	{login: 'Dario46', password: 'S7UFcQ2F4a5Z9EO'},
@@ -10,3 +10,23 @@ exports.identifiants = [
 	{login: 'Eileen.McLaughlin', password: 'KFeXwyzjELQ6W9A'},
 	{login: 'test', password: 'pass'}
 ]
+
+const autorisations = identifiants.map(elem => {
+	let code = []
+	for (let i = 0; i < 3; i++)
+		if (Math.random() > .5)
+			code.push(i)
+
+	return {
+		login: elem.login,
+		code
+	}
+})
+
+exports.check_ident = (login, password) => {
+	return identifiants.some(value => value.login === login && value.password === password)
+}
+
+exports.check_code = (login, code) => {
+	return autorisations.some(value => value.login === login && value.code.includes(code))
+}

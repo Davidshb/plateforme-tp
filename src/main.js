@@ -6,44 +6,25 @@ const host = '0.0.0.0' // Utiliser 0.0.0.0 pour être visible depuis l'exterieur
 const port = process.env.PORT || 8000
 const jwt = require('jsonwebtoken')
 const validate = require('jsonschema').validate
-const amqp = require("amqplib/callback_api")
+const amqp = require("amqplib")
 const schemas = require("./schema.json")
-const {identifiants} = require('./authdb')
+const {check_ident, check_code} = require('./db/authdb')
+const {get_queue, code_valid} = require("./db/routingdb")
+const {routeur} = require("./router")
 
+const backend_queue = "from_backend"
 const my_key = process.env.MY_KEY
 const TOKEN_LIFE = 600
 const opt = {
-	credentials: require("amqplib").credentials.plain(process.env.AMQP_USER, process.env.AMQP_PASSWORD)
+	credentials: amqp.credentials.plain(process.env.AMQP_USER, process.env.AMQP_PASSWORD)
 }
 const IP = process.env.RABBIT_MQ_IP || "127.0.0.1"
-
-amqp.connect(`amqp://${IP}`, opt, (error0, connection) => {
-	if (error0) {
-		console.log("error 0 : %s", error0.message)
-		process.exit(-1)
-	}
-
-	connection.createChannel((error1, channel) => {
-		if (error1) {
-			console.log("error1 : %s", error1.message)
-			process.exit(-2)
-		}
-
-		let queue = "from_backend"
-
-		channel.assertQueue(queue, {
-			durable: true
-		})
-
-		channel.consume(queue, msg => console.log("queue %s : message -> %s", queue, msg.content.toString()))
-	}, {
-		noAck: true
-	})
-})
 
 function run() {
 
 	app.use(bodyParser.json())
+
+	const amqp_open = amqp.connect(`amqp://${IP}`, opt)
 
 	function jsonSchemaInvalid(res, messages) {
 		res.send(JSON.stringify({
@@ -69,6 +50,22 @@ function run() {
 		return res
 	}
 
+	function add_to_queue(data) {
+		return amqp_open
+			.then(connection => connection.createChannel())
+			.then(channel => {
+				return channel.assertQueue(backend_queue, {
+					durable: true
+				}).then(() => channel.sendToQueue(backend_queue, Buffer.from(JSON.stringify(data)), {noAck: true}))
+			}).catch(error => {
+				console.log("error1 : %s", error.message)
+				process.exit(-2)
+			})
+			.catch(err => {
+				console.log("error amqp : %s", err.message)
+			})
+	}
+
 	function login(req, res) {
 		const t = validate(req.body, schemas.loginSchema)
 
@@ -78,7 +75,7 @@ function run() {
 		let {login, password} = req.body
 		res.setHeader('Content-Type', 'application/json')
 
-		if (!identifiants.some(elem => elem.login === login && elem.password === password))
+		if (!check_ident(login, password))
 			return res.status(401)
 				.end(JSON.stringify({code: -1}))
 
@@ -91,7 +88,7 @@ function run() {
 	}
 
 	function pushdata(req, res) {
-		let {token, code} = req.body
+		let {token, code, data} = req.body
 		const t = validate(req.body, schemas.pushDataSchema)
 
 		if (!t.valid)
@@ -100,12 +97,13 @@ function run() {
 		let decoded = check_jwt(token)
 
 		if (decoded.error)
-			return res.status(401)
-				.end(JSON.stringify({code: -1, message: decoded.message}))
+			return res.status(401).end(JSON.stringify({code: -1, message: decoded.message}))
 
-		console.log("code reçu " + code)
-
-		res.send(JSON.stringify({data: "merci"}))
+		return add_to_queue({
+			username: decoded.username,
+			code,
+			data
+		}).then(() => res.send(JSON.stringify({data: "merci"})))
 	}
 
 	app.post("/login", login)
@@ -121,6 +119,8 @@ function run() {
 	app.listen(port, host, () => {
 		console.log(`Server is running at http://${host}:${port}`)
 	})
+
+	routeur(amqp_open, backend_queue)
 }
 
 exports.run = run

@@ -25,6 +25,9 @@
       },
       "code": {
         "type": "int"
+      },
+      "data": {
+        "type": "string"
       }
     },
     "required": [
