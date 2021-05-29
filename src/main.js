@@ -8,9 +8,9 @@ const jwt = require('jsonwebtoken')
 const validate = require('jsonschema').validate
 const amqp = require("amqplib")
 const schemas = require("./schema.json")
-const {check_ident, check_code} = require('./db/authdb')
-const {get_queue, code_valid} = require("./db/routingdb")
+const {check_ident} = require('./db/authdb')
 const {routeur} = require("./router")
+const {display_all} = require("./display")
 
 const backend_queue = "from_backend"
 const my_key = process.env.MY_KEY
@@ -34,11 +34,11 @@ function run() {
 	}
 
 	function check_jwt(token) {
-		let res = null
+		let res
 		try {
-			console.log("auth :\n---------------------------------------")
+			//console.log("auth :\n---------------------------------------")
 			res = jwt.verify(token, process.env.MY_KEY, {algorithm: "HS512"})
-			console.log(res)
+			//console.log(res)
 		} catch (err) {
 			console.log(err.message)
 			res = {
@@ -46,24 +46,8 @@ function run() {
 				message: err.message
 			}
 		}
-		console.log("----------------------------------------")
+		//console.log("----------------------------------------")
 		return res
-	}
-
-	function add_to_queue(data) {
-		return amqp_open
-			.then(connection => connection.createChannel())
-			.then(channel => {
-				return channel.assertQueue(backend_queue, {
-					durable: true
-				}).then(() => channel.sendToQueue(backend_queue, Buffer.from(JSON.stringify(data)), {noAck: true}))
-			}).catch(error => {
-				console.log("error1 : %s", error.message)
-				process.exit(-2)
-			})
-			.catch(err => {
-				console.log("error amqp : %s", err.message)
-			})
 	}
 
 	function login(req, res) {
@@ -99,11 +83,21 @@ function run() {
 		if (decoded.error)
 			return res.status(401).end(JSON.stringify({code: -1, message: decoded.message}))
 
-		return add_to_queue({
-			username: decoded.username,
-			code,
-			data
-		}).then(() => res.send(JSON.stringify({data: "merci"})))
+		return amqp_open
+			.then(connection => connection.createChannel())
+			.then(channel => {
+				return channel.assertQueue(backend_queue, {
+					durable: true
+				}).then(() => channel.sendToQueue(backend_queue, Buffer.from(JSON.stringify({
+					username: decoded.username,
+					code,
+					data
+				})), {noAck: true}))
+			}).catch(error => {
+				console.log("error : %s", error.message)
+				process.exit(-2)
+			})
+			.then(() => res.send(JSON.stringify({data: "merci " + decoded.username})))
 	}
 
 	app.post("/login", login)
@@ -121,6 +115,7 @@ function run() {
 	})
 
 	routeur(amqp_open, backend_queue)
+	display_all(amqp_open)
 }
 
 exports.run = run

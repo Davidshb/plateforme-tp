@@ -23,10 +23,8 @@ const autorisations = identifiants.map(elem => {
 	}
 })
 
-exports.check_ident = (login, password) => {
-	return identifiants.some(value => value.login === login && value.password === password)
-}
+console.log(autorisations)
 
-exports.check_code = (login, code) => {
-	return autorisations.some(value => value.login === login && value.code.includes(code))
-}
+exports.check_ident = (login, password) => identifiants.some(value => value.login === login && value.password === password)
+
+exports.check_code = (login, code) => autorisations.some(value => value.login === login && value.code.includes(code))

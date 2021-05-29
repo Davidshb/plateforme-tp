@@ -4,6 +4,8 @@ const queues = {
 	2: "externe_2"
 }
 
+exports.queues = Object.values(queues)
+
 exports.get_queue = code => queues[code]
 
 exports.code_valid = code => Object.keys(queues).includes(code.toString())

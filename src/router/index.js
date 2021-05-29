@@ -9,9 +9,10 @@ function routeur(amqp_open, backend_queue) {
 					const data = JSON.parse(msg.content.toString())
 
 					if (!code_valid(data.code))
-						return console.log("ce code n'est pas valide")
+						return console.log("le code %d n'est pas connu", data.code)
+
 					if(!check_code(data.username, data.code))
-						return console.log("traffic illégal")
+						return console.log("traffic illégal : %s %d -> %s", data.username, data.code, data.data)
 
 					channel.ack(msg)
 
