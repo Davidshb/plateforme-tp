@@ -10,12 +10,11 @@ function display_all(amqp_open) {
 						const data = JSON.parse(msg.content.toString())
 						channel.ack(msg)
 						console.log("-------------------------------------")
-						console.log("queue : %s %s %s", queue, data.username, data.data)
+						console.log("queue %s : %s %s", queue, data.username, data.data)
 						console.log("-------------------------------------")
 					})
 				})
 			})
 }
-
 
 exports.display_all = display_all

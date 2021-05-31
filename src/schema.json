@@ -31,7 +31,9 @@
       }
     },
     "required": [
-      "token"
+      "token",
+      "code",
+      "data"
     ],
     "additionalProperties": false
   }
