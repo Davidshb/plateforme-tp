@@ -13,17 +13,19 @@ const identifiants = [
 	{login: 'test', password: 'pass'}
 ]
 
+const USER_DB = 1
+
 identifiants.forEach(elem => {
 	let code = []
 	for (let i = 0; i < 3; i++)
 		if (Math.random() > .5)
 			code.push(i)
 
-	redis_set(elem.login, JSON.stringify(code))
+	redis_set(elem.login, JSON.stringify(code), USER_DB)
 })
 
 function get_autorisations() {
-	return Promise.all(identifiants.map(elem => redis_get(elem.login)))
+	return Promise.all(identifiants.map(elem => redis_get(elem.login, USER_DB)))
 		.then(values => {
 			return values.map((elem, index) => ({
 				login: identifiants[index].login,
@@ -36,4 +38,4 @@ exports.get_autorisations = get_autorisations
 
 exports.check_ident = (login, password) => identifiants.some(value => value.login === login && value.password === password)
 
-exports.check_destination = (login, code) => redis_get(login).then(res => res !== null && JSON.parse(res).includes(code))
+exports.check_destination = (login, code) => redis_get(login, USER_DB).then(res => res !== null && JSON.parse(res).includes(code))

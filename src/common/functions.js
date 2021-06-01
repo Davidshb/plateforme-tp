@@ -12,8 +12,8 @@ function amqp_connect() {
 		.then(connection => connection.createChannel())
 }
 
-exports.redis_get = cle => {
-	const client = redis.createClient()
+exports.redis_get = (cle, db = 0) => {
+	const client = redis.createClient({db})
 	const getAsync = promisify(client.get).bind(client)
 	return getAsync(cle).then(valeur => {
 		client.end(true)
@@ -21,8 +21,8 @@ exports.redis_get = cle => {
 	})
 }
 
-exports.redis_set = (cle, valeur) => {
-	const client = redis.createClient()
+exports.redis_set = (cle, valeur, db = 0) => {
+	const client = redis.createClient({db})
 	const setAsync = promisify(client.set).bind(client)
 	return setAsync(cle, valeur).then(() => client.end(true))
 }
