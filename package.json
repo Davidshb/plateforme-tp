@@ -4,21 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon bin/server.js",
+    "server": "nodemon -w src/ -i src/client bin/server.js",
     "client": "node bin/client.js",
-    "redis": "docker run -i --rm --name redis -p 6379:6379 redis"
+    "redis": "docker run -i --rm --name redis -p 6379:6379 redis",
+    "rabbitmq_docker": "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management",
+    "router": "nodemon -w src/router -w src/common -w src/db bin/router.js",
+    "backend": "nodemon -w src/backend -w src/common -w src/db bin/backend.js",
+    "display": "nodemon -w src/display -w src/common -w src/db bin/display.js",
+    "rest": "nodemon -w src/rest -w src/common bin/rest.js",
+    "ptr": "nodemon -w src/publishToRedis -w src/common -w src/db bin/publish_to_redis.js"
   },
   "author": "",
   "license": "GPLv3",
   "dependencies": {
     "amqplib": "^0.7.1",
+    "argparse": "^2.0.1",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "faker": "^5.5.3",
+    "jsonschema": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
     "redis": "^3.1.0"
-  },
-  "devDependencies": {
-    "scripty": "^2.0.0"
   }
 }

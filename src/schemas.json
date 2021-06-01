@@ -1,0 +1,40 @@
+{
+  "loginSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "login": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "login",
+      "password"
+    ],
+    "additionalProperties": false
+  },
+  "pushDataSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "token": {
+        "type": "string"
+      },
+      "destination": {
+        "type": "int"
+      },
+      "data": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "token",
+      "destination",
+      "data"
+    ],
+    "additionalProperties": false
+  }
+}

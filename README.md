@@ -41,7 +41,7 @@ npm run client
 
 1. Installez Node (version >= 12.* ) et NPM (version >= 6.* )
 2. `npm install --save`
-3. personnalisez les variables `host` et `port` dans le fichier [main.js](src/main.js)
+3. personnalisez les variables `host` et `port` dans le fichier [main.js](src/backend/main.js)
 4. Commencez à l'utiliser !
 
 
